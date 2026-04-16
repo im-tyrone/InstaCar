@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli Auto - InstaCar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1 id="dettaglio-marca">Caricamento...</h1>
+    </header>
+    <main style="padding: 20px; text-align: center;">
+        <div id="info-auto" class="card-auto" style="width: 80%; margin: 0 auto; cursor: default;">
+            </div>
+        <br>
+        <nav>
+            <a href="annunci.html" class="btn-normale">Torna agli Annunci</a>
+        </nav>
+    </main>
+
+    <script>
+        const catalogo = [
+            { 
+                marca: "Audi", modello: "RS6", prezzo: "120.000€", 
+                immagine: "rs6.png", 
+                descrizione: "Motore V8 biturbo, 600 CV. Prestazioni da supercar in un corpo da familiare." 
+            },
+            { 
+                marca: "Tesla", modello: "Model S", prezzo: "95.000€", 
+                immagine: "models.png", 
+                descrizione: "Berlina elettrica ad alte prestazioni con guida autonoma avanzata." 
+            },
+            { 
+                marca: "Fiat", modello: "Panda 4x4", prezzo: "12.000€", 
+                immagine: "panda4x4.png", 
+                descrizione: "L'intramontabile fuoristrada compatto, perfetta per ogni terreno." 
+            },
+            { 
+                marca: "Lamborghini", modello: "Urus", prezzo: "220.000€", 
+                immagine: "urus.png", 
+                descrizione: "Il SUV più estremo di sempre, l'anima Lamborghini in un formato versatile." 
+            }
+        ];
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        const infoAuto = document.getElementById('info-auto');
+        const titoloPagina = document.getElementById('dettaglio-marca');
+
+        if (id !== null && catalogo[id]) {
+            const auto = catalogo[id];
+            
+            titoloPagina.innerText = auto.marca + " " + auto.modello;
+
+            infoAuto.innerHTML = `
+                <img src="${auto.immagine}" alt="${auto.marca}" style="width: 100%; max-width: 600px; border-radius: 10px; margin-bottom: 20px;">
+                <h2>${auto.marca} ${auto.modello}</h2>
+                <p style="font-size: 1.2em; color: cyan;"><strong>Prezzo: ${auto.prezzo}</strong></p>
+                <p style="margin-top: 15px; line-height: 1.6; color: white;">${auto.descrizione}</p>
+            `;
+        } else {
+            titoloPagina.innerText = "Errore";
+            infoAuto.innerHTML = "<p>Auto non trovata o ID non valido.</p>";
+        }
+    </script>
+</body>
+</html>
