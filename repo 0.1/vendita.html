@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendi Auto - InstaCar</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-vendita { max-width: 500px; margin: 40px auto; padding: 20px; border: 1px solid cyan; border-radius: 15px; background: #111; }
+        .input-box { width: 90%; padding: 10px; margin: 10px 0; background: black; border: 1px solid cyan; color: white; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <header><h1>Vendi la tua Auto</h1></header>
+    <main>
+        <form class="form-vendita" id="car-form">
+            <input type="text" id="marca" placeholder="Marca (es. Audi)" class="input-box" required>
+            <input type="text" id="modello" placeholder="Modello (es. A3)" class="input-box" required>
+            <input type="text" id="prezzo" placeholder="Prezzo" class="input-box" required>
+            <input type="text" id="km" placeholder="Chilometri" class="input-box" required>
+            <input type="number" id="anno" placeholder="Anno" class="input-box" required>
+            <input type="email" id="contatto" placeholder="Tua Email o Telefono" class="input-box" required>
+            <textarea id="descrizione" placeholder="Descrizione dell'auto..." class="input-box" rows="4"></textarea>
+            
+            <label style="color: cyan;">Carica Foto (Multiple):</label>
+            <input type="file" id="foto" accept="image/*" multiple class="input-box">
+            <div id="preview-area" class="gallery-container"></div>
+
+            <button type="submit" class="btn-pubblica" style="width: 100%; margin-top: 20px;">Pubblica Annuncio</button>
+        </form>
+    </main>
+
+    <script>
+        const fotoInput = document.getElementById('foto');
+        const previewArea = document.getElementById('preview-area');
+        let arrayImmagini = [];
+
+        // Funzione Formattazione Numeri e Prezzo
+        const formattaInput = (valore, isPrezzo = false) => {
+            let num = valore.replace(/\D/g, ""); // Rimuove tutto ciò che non è numero
+            if (!num) return "";
+            let formattato = new Intl.NumberFormat('de-DE').format(num); // Aggiunge il punto ogni 3 cifre
+            if (isPrezzo) return formattato + "€";
+            return formattato;
+        };
+
+        // Eventi per formattazione live
+        document.getElementById('prezzo').addEventListener('blur', function() { this.value = formattaInput(this.value, true); });
+        document.getElementById('km').addEventListener('blur', function() { this.value = formattaInput(this.value); });
+
+        // Anteprima immagini
+        fotoInput.addEventListener('change', function() {
+            previewArea.innerHTML = "";
+            arrayImmagini = [];
+            Array.from(this.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    arrayImmagini.push(e.target.result);
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = "gallery-img";
+                    previewArea.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        document.getElementById('car-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nuovaAuto = {
+                marca: document.getElementById('marca').value,
+                modello: document.getElementById('modello').value,
+                prezzo: document.getElementById('prezzo').value,
+                km: document.getElementById('km').value,
+                anno: document.getElementById('anno').value,
+                contatto: document.getElementById('contatto').value,
+                descrizione: document.getElementById('descrizione').value,
+                immagini: arrayImmagini.length > 0 ? arrayImmagini : ["placeholder.png"]
+            };
+
+            const database = JSON.parse(localStorage.getItem('auto_utente')) || [];
+            database.push(nuovaAuto);
+            localStorage.setItem('auto_utente', JSON.stringify(database));
+            window.location.href = "annunci.html";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli - InstaCar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header><h1 id="titolo">Dettaglio Auto</h1></header>
+    <main style="padding: 20px; text-align: center;">
+        <div id="contenitore-immagini" class="gallery-container"></div>
+        <div id="info-testo" style="margin-top: 20px;">
+            <h2 id="marca-modello"></h2>
+            <p id="prezzo-auto" style="color: cyan; font-size: 1.5em;"></p>
+            <p id="dati-tecnici"></p>
+            <hr border="1" color="cyan">
+            <p id="descrizione-auto"></p>
+            <div id="contatto-box" style="margin-top: 20px; padding: 15px; border: 1px dashed cyan;">
+                <strong>Contatta il venditore: </strong> <span id="email-venditore"></span>
+            </div>
+        </div>
+        <br><a href="annunci.html" class="btn-normale">Torna indietro</a>
+    </main>
+
+    <script>
+        // Riutilizziamo la stessa logica di caricamento
+        const catalogoBase = [
+            { marca: "Audi", modello: "RS6", prezzo: "120.000€", immagini: ["rs6.png"], descrizione: "V8 Biturbo." },
+            { marca: "Tesla", modello: "Model S", prezzo: "95.000€", immagini: ["models.png"], descrizione: "Elettrica pura." },
+            { marca: "Fiat", modello: "Panda 4x4", prezzo: "12.000€", immagini: ["panda4x4.png"], descrizione: "Inarrestabile." },
+            { marca: "Lamborghini", modello: "Urus", prezzo: "220.000€", immagini: ["urus.png"], descrizione: "SUV estremo." }
+        ];
+        
+        const autoUtente = JSON.parse(localStorage.getItem('auto_utente')) || [];
+        const catalogoCompleto = [...catalogoBase, ...autoUtente];
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const auto = catalogoCompleto[id];
+
+        if (auto) {
+            document.getElementById('marca-modello').innerText = `${auto.marca} ${auto.modello}`;
+            document.getElementById('prezzo-auto').innerText = auto.prezzo;
+            document.getElementById('dati-tecnici').innerText = `Anno: ${auto.anno || 'N/D'} | KM: ${auto.km || 'N/D'}`;
+            document.getElementById('descrizione-auto').innerText = auto.descrizione;
+            document.getElementById('email-venditore').innerText = auto.contatto || "Privato InstaCar";
+
+            // Mostra tutte le immagini caricate
+            const containerImg = document.getElementById('contenitore-immagini');
+            auto.immagini.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = "gallery-img";
+                img.style.width = "300px"; // Più grandi nel dettaglio
+                img.style.height = "auto";
+                containerImg.appendChild(img);
+            });
+        } else {
+            document.body.innerHTML = "<h1>Errore: Auto non trovata</h1>";
+        }
+    </script>
+</body>
+</html>
