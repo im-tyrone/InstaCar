@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Annunci</title>
+    <title>Annunci - InstaCar</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
-        <h1>InstaCar</h1><br>
-        <h2>trova l'auto perfetta per te!</h2>
-        <input type="text" id="cerca-auto" placeholder="Cerca per marca o modello..." class="search-bar">
+        <h1>InstaCar</h1>
+        <div class="filter-container">
+            <input type="text" id="filter-marca" placeholder="Marca (es. Audi)">
+            <input type="text" id="filter-modello" placeholder="Modello (es. RS6)">
+            <input type="number" id="filter-prezzo" placeholder="Prezzo Max (€)">
+            <button id="btn-cerca" class="btn-piccolo">Cerca</button>
+        </div>
     </header>
     <main>
         <div id="lista-auto"></div>
-        <nav><a href="index.html" class="btn-normale">Home</a></nav>
+        <nav style="text-align:center;"><a href="index.html" class="btn-normale">Home</a></nav>
     </main>
     <script src="script.js"></script>
 </body>

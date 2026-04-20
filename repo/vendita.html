@@ -1,15 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Vendi su InstaCar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <header>
+        <h1>Vendi la tua Auto</h1>
+    </header>
+    <main class="form-container">
+        <form id="form-vendita">
+            <input type="text" id="v-marca" placeholder="Marca (es. Audi)" required>
+            <input type="text" id="v-modello" placeholder="Modello (es. RS6)" required>
+            <select id="v-carburante" required>
+                <option value="">Tipo di carburante</option>
+                <option value="Benzina">Benzina</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Elettrico">Elettrico</option>
+            </select>
+            <input type="number" id="v-proprietari" placeholder="Numero Proprietari" required>
+            <input type="number" id="v-prezzo" placeholder="Prezzo (€)" required>
 
+            <div class="upload-box">
+                <p>UPLODARE IMMAGINE DAL DESKTOP</p>
+                <input type="file" id="v-img" accept="image/*" required>
+            </div>
+
+            <textarea id="v-desc" placeholder="Descrizione dell'auto..." rows="4" required></textarea>
+            <button type="submit" class="btn-normale" style="width:100%">Pubblica</button>
+        </form>
+        <nav><a href="index.html" class="btn-normale">Indietro</a></nav>
+    </main>
+    <script src="script.js"></script>
 </body>
 
 </html>
