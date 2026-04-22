@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaCar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>InstaCar</h1>
+        <nav>
+            <a href="annunci.html" class="btn-grande">Sfoglia Annunci</a>
+            <a href="vendita.html" class="btn-grande">Vendi Auto</a>
+        </nav>
+    </header>
+<main>
+    <div id="auth-section">
+        <h2>Accedi o Registrati</h2>
+        <input type="email" id="email-login" placeholder="Email" class="search-bar" style="display:block; margin: 10px auto;">
+        <input type="password" id="pass-login" placeholder="Password" class="search-bar" style="display:block; margin: 10px auto;">
+        
+        <button id="btn-login" class="btn-normale">Accedi</button>
+        <button id="btn-registrati" class="btn-normale" style="background-color: gray;">Registrati</button>
+    </div>
+
+    <div id="user-logged" style="display:none;">
+        <p>Benvenuto, <span id="user-email-display"></span></p>
+        <button id="btn-logout" class="btn-normale" style="background-color: red;">Esci</button>
+    </div>
+</main>
+
+    <script type="module" src="auth.js"></script>
+</body>
+
+</html>
