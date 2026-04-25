@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli - InstaCar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header><h1 id="titolo">Dettaglio Auto</h1></header>
+    <main style="padding: 20px; text-align: center;">
+        <div id="contenitore-immagini" class="gallery-container"></div>
+        <div id="info-testo" style="margin-top: 20px;">
+            <h2 id="marca-modello"></h2>
+            <p id="prezzo-auto" style="color: cyan; font-size: 1.5em;"></p>
+            <p id="dati-tecnici"></p>
+            <hr border="1" color="cyan">
+            <p id="descrizione-auto"></p>
+            <div id="contatto-box" style="margin-top: 20px; padding: 15px; border: 1px dashed cyan;">
+                <strong>Contatta il venditore: </strong> <span id="email-venditore"></span>
+            </div>
+        </div>
+        <br><a href="annunci.html" class="btn-normale">Torna indietro</a>
+    </main>
+
+    <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    async function caricaDettaglio() {
+        const docRef = doc(db, "annunci", id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const auto = docSnap.data();
+            document.getElementById('marca-modello').innerText = `${auto.marca} ${auto.modello}`;
+            document.getElementById('prezzo-auto').innerText = `${auto.prezzo} €`;
+            document.getElementById('dati-tecnici').innerText = `Anno: ${auto.anno} | KM: ${auto.km}`;
+            document.getElementById('descrizione-auto').innerText = auto.descrizione;
+            document.getElementById('email-venditore').innerText = auto.contatto;
+
+            // --- GESTIONE CAROSELLO IMMAGINI ---
+            const containerImg = document.getElementById('contenitore-immagini');
+            if (auto.immagini && auto.immagini.length > 0) {
+                let indiceImmagine = 0;
+                
+                containerImg.innerHTML = `
+                    <div class="carousel-wrapper">
+                        <button id="prev-img" class="carousel-btn">&#10094;</button>
+                        <img id="main-img" src="${auto.immagini[0]}" alt="Immagine Auto">
+                        <button id="next-img" class="carousel-btn">&#10095;</button>
+                    </div>
+                    <div id="contatore-img">1 / ${auto.immagini.length}</div>
+                `;
+
+                const imgElement = document.getElementById('main-img');
+                const contatore = document.getElementById('contatore-img');
+
+                document.getElementById('prev-img').onclick = () => {
+                    indiceImmagine = (indiceImmagine > 0) ? indiceImmagine - 1 : auto.immagini.length - 1;
+                    imgElement.src = auto.immagini[indiceImmagine];
+                    contatore.innerText = `${indiceImmagine + 1} / ${auto.immagini.length}`;
+                };
+
+                document.getElementById('next-img').onclick = () => {
+                    indiceImmagine = (indiceImmagine < auto.immagini.length - 1) ? indiceImmagine + 1 : 0;
+                    imgElement.src = auto.immagini[indiceImmagine];
+                    contatore.innerText = `${indiceImmagine + 1} / ${auto.immagini.length}`;
+                };
+            } else {
+                containerImg.innerHTML = `<p style="color: gray;">Nessuna immagine disponibile</p>`;
+            }
+
+            // --- GESTIONE PROPRIETARIO VS COMPRATORE ---
+            onAuthStateChanged(auth, (user) => {
+                const box = document.getElementById('contatto-box');
+                if (user && user.uid === auto.id_venditore) {
+                    box.innerHTML = `
+                        <p style="color:yellow; margin-bottom:10px;">Questo è il tuo annuncio</p>
+                        <button id="elimina-annuncio" class="btn-normale" style="background:red; color:white;">Elimina Annuncio</button>
+                    `;
+                    document.getElementById('elimina-annuncio').onclick = async () => {
+                        if(confirm("Sei sicuro di voler eliminare questo annuncio?")) {
+                            await deleteDoc(docRef);
+                            window.location.href = "annunci.html";
+                        }
+                    };
+                } else {
+                    // RISOLTO IL BUG DELLA CHAT: aggiunto id="btn-chat" nel tag HTML
+                    box.innerHTML += `<br><button id="btn-chat" class="btn-pubblica">Inizia Chat</button>`;
+                    
+                    document.getElementById('btn-chat').addEventListener('click', () => {
+                        if (!user) {
+                            alert("Devi loggarti per iniziare una chat!");
+                            window.location.href = "index.html"; // Rimanda al login
+                            return; 
+                        }                   
+                        window.location.href = `chat.html?annuncio=${id}&venditore=${auto.id_venditore}&compratore=${user.uid}`;
+                    });
+                }
+            });
+        } else {
+            document.getElementById('titolo').innerText = "Annuncio non trovato";
+        }
+    }
+    caricaDettaglio();
+    </script>
+</body>
+</html>
