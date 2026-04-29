@@ -1,27 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InstaCar</title>
+    <title>Home - InstaCar</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
         <h1>InstaCar</h1>
-        <nav>
+        <div id="user-logged" style="margin-top: 10px;">
+            <p>Benvenuto, <span id="user-email-display" style="color: cyan; font-weight: bold;"></span></p>
+            <button id="btn-logout" class="btn-back">Logout</button>
+        </div>
+    </header>
+
+    <main style="text-align: center; padding-top: 50px;">
+        <nav style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
             <a href="annunci.html" class="btn-grande">Sfoglia Annunci</a>
             <a href="vendita.html" class="btn-grande">Vendi Auto</a>
+            <a href="mie-chat.html" class="btn-grande" style="border-color: white;">Le Mie Conversazioni</a>
         </nav>
-    </header>
-    <main>
-        <h2>Benvenuto su InstaCar</h2><br>
-        <p>Seleziona un'opsione per iniziare.</p>
     </main>
-    <script src="script.js"></script>
+
+    <script type="module" src="auth.js"></script>
 </body>
 
 </html>

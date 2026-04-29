@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - InstaCar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>InstaCar</h1>
+    </header>
+
+    <main style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;">
+
+        <div id="auth-section" class="card-auto" style="width: 350px; padding: 40px; text-align: center; display: block;">
+            <h2 style="color: cyan;">Accedi o Registrati</h2>
+
+            <input type="email" id="email-login" placeholder="Email" class="search-bar" style="display:block; margin: 15px auto; width: 80%;">
+            <input type="password" id="pass-login" placeholder="Password" class="search-bar" style="display:block; margin: 15px auto; width: 80%;">
+
+            <button id="btn-login" class="btn-pubblica" style="width: 90%; margin-top: 10px;">Accedi</button>
+            <button id="btn-registrati" class="btn-normale" style="background-color: #333; color: white; width: 90%; margin-top: 10px;">Registrati</button>
+        </div>
+    </main>
+
+    <script type="module" src="auth.js"></script>
+</body>
+
+</html>

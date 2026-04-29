@@ -3,38 +3,66 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Vendi su InstaCar</title>
+    <title>Vendi Auto - InstaCar</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .form-vendita {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid cyan;
+            border-radius: 15px;
+            background: #111;
+        }
+        
+        .input-box {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            background: black;
+            border: 1px solid cyan;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <h1>Vendi la tua Auto</h1>
     </header>
-    <main class="form-container">
-        <form id="form-vendita">
-            <input type="text" id="v-marca" placeholder="Marca (es. Audi)" required>
-            <input type="text" id="v-modello" placeholder="Modello (es. RS6)" required>
-            <select id="v-carburante" required>
-                <option value="">Tipo di carburante</option>
-                <option value="Benzina">Benzina</option>
-                <option value="Diesel">Diesel</option>
-                <option value="Elettrico">Elettrico</option>
-            </select>
-            <input type="number" id="v-proprietari" placeholder="Numero Proprietari" required>
-            <input type="number" id="v-prezzo" placeholder="Prezzo (€)" required>
 
-            <div class="upload-box">
-                <p>UPLODARE IMMAGINE DAL DESKTOP</p>
-                <input type="file" id="v-img" accept="image/*" required>
-            </div>
+    <main>
+        <form class="form-vendita" id="car-form">
+            <input type="text" id="marca" placeholder="Marca (es. Audi)" class="input-box" required>
+            <input type="text" id="modello" placeholder="Modello (es. A3)" class="input-box" required>
+            <input type="text" id="prezzo" placeholder="Prezzo" class="input-box" required>
+            <input type="text" id="km" placeholder="Chilometri" class="input-box" required>
+            <input type="number" id="anno" placeholder="Anno" class="input-box" required>
+            <input type="email" id="contatto" placeholder="Tua Email o Telefono" class="input-box" required>
+            <textarea id="descrizione" placeholder="Descrizione dell'auto..." class="input-box" rows="4"></textarea>
 
-            <textarea id="v-desc" placeholder="Descrizione dell'auto..." rows="4" required></textarea>
-            <button type="submit" class="btn-normale" style="width:100%">Pubblica</button>
+            <label style="color: cyan;">Carica Foto (Multiple):</label>
+            <input type="file" id="foto" accept="image/*" multiple class="input-box">
+            <div id="preview-area" class="gallery-container"></div>
+
+            <button type="submit" class="btn-pubblica" style="width: 100%; margin-top: 20px;">Pubblica Annuncio</button>
         </form>
-        <nav><a href="index.html" class="btn-normale">Indietro</a></nav>
+        <button onclick="window.location.href='index.html'" class="btn-normale" style="margin-bottom: 20px; background-color: #555;">
+            Torna alla Home
+        </button>
     </main>
-    <script src="script.js"></script>
+
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js'; import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"; import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        let utenteAttivo = null; let arrayImmagini = []; onAuthStateChanged(auth, (user) => { if (user) { utenteAttivo = user; console.log("Utente pronto:", user.email); } else { alert("Devi essere loggato!"); window.location.href = 'index.html'; } });
+        document.getElementById('car-form').addEventListener('submit', async (e) => { e.preventDefault(); if (!utenteAttivo) return alert("Login non trovato"); const datiAuto = { id_venditore: utenteAttivo.uid, email_venditore: utenteAttivo.email, marca:
+        document.getElementById('marca').value, modello: document.getElementById('modello').value, prezzo: document.getElementById('prezzo').value, km: document.getElementById('km').value, anno: document.getElementById('anno').value, descrizione: document.getElementById('descrizione').value,
+        immagini: arrayImmagini, creatoIl: serverTimestamp() }; try { await addDoc(collection(db, "annunci"), datiAuto); alert("Pubblicato!"); window.location.href = 'annunci.html'; } catch (error) { alert("Errore: " + error.message); } }); document.getElementById('foto').addEventListener('change',
+        function(e) { const previewArea = document.getElementById('preview-area'); previewArea.innerHTML = ''; arrayImmagini = []; const files = e.target.files; for (let file of files) { const reader = new FileReader(); reader.onload = (event) => { const
+        imgData = event.target.result; arrayImmagini.push(imgData); const imgThumb = document.createElement('img'); imgThumb.src = imgData; imgThumb.classList.add('gallery-img'); previewArea.appendChild(imgThumb); }; reader.readAsDataURL(file); } });
+    </script>
 </body>
 
 </html>

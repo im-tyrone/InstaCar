@@ -9,33 +9,29 @@
 
 <body>
     <header>
-        <h1 id="dettaglio-titolo">...</h1>
+        <h1 id="titolo">Dettaglio Auto</h1>
     </header>
-    <main style="display:flex; flex-direction:column; align-items:center; padding:20px;">
-        <div id="info-auto" style="max-width: 800px; text-align: center;">
-        </div>
-        <nav><a href="annunci.html" class="btn-normale">Torna agli annunci</a></nav>
-    </main>
-    <script src="script.js"></script>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-        const auto = catalogo[id];
+    <main style="padding: 20px; text-align: center;">
+        <div id="contenitore-immagini" class="gallery-container"></div>
+        <div id="info-testo" style="margin-top: 20px;">
+            <h2 id="marca-modello"></h2>
+            <p id="prezzo-auto" style="color: cyan; font-size: 1.5em;"></p>
+            <p id="dati-tecnici"></p>
+            <hr border="1" color="cyan">
+            <p id="descrizione-auto"></p>
 
-        if (auto) {
-            document.getElementById('dettaglio-titolo').innerText = auto.marca + " " + auto.modello;
-            document.getElementById('info-auto').innerHTML = `
-                <img src="${auto.immagine}" style="width:100%; border-radius:20px; border:2px solid cyan;">
-                <div style="text-align:left; margin-top:20px; font-size:1.2em;">
-                    <p><strong>Costo:</strong> ${auto.prezzo} €</p>
-                    <p><strong>Carburante:</strong> ${auto.carburante}</p>
-                    <p><strong>Proprietari precedenti:</strong> ${auto.proprietari}</p>
-                    <p><strong>Descrizione:</strong> ${auto.descrizione}</p>
-                    <button onclick="compraAuto(${id})" class="btn-compra">COMPRA ORA</button>
-                </div>
-            `;
-        }
-    </script>
+            <a href="chat.html" class="btn-pubblica">
+                INIZIA CHAT
+             </a>
+        </div>
+        </div>
+
+        <br>
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
+            <a href="annunci.html" class="btn-normale">Torna indietro</a>
+        </div>
+    </main>
+    <script type="module" src="dettagli.js"></script>
 </body>
 
 </html>
