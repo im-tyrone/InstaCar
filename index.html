@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,39 +7,53 @@
     <title>InstaCar</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <header>
-        <h1>InstaCar</h1>
-        <nav>
+        <div class="header-top">
+            <h1>InstaCar</h1>
+            
+            <div class="menu-utente-container">
+                <button id="btn-menu-utente" class="btn-utente">👤 Area Personale</button>
+                
+                <div id="dropdown-menu" class="dropdown-menu">
+                    <div id="auth-section">
+                        <h3 style="margin-top:0; color: cyan;">Accedi o Registrati</h3>
+                        <input type="email" id="email-login" placeholder="Email" class="search-bar" style="width: 85%; margin: 5px 0; padding: 10px; margin-left: 0;">
+                        <input type="password" id="pass-login" placeholder="Password" class="search-bar" style="width: 85%; margin: 5px 0; padding: 10px; margin-left: 0;">
+                        <button id="btn-login" class="btn-normale" style="width: 100%; margin: 10px 0 5px 0; height: 40px;">Accedi</button>
+                        <button id="btn-registrati" class="btn-normale" style="width: 100%; margin: 5px 0; background-color: gray; height: 40px;">Registrati</button>
+                    </div>
+
+                    <div id="user-logged" style="display:none;">
+                        <p>Ciao, <span id="user-email-display" style="color: cyan; font-weight: bold;"></span></p>
+                        <button id="btn-logout" class="btn-normale" style="background-color: #444; color: white; height: 35px; width: 100%; margin: 5px 0;">Logout</button>
+                        
+                        <hr border="1" color="cyan" style="margin: 15px 0;">
+                        
+                        <h4 style="color: cyan;">Le mie Conversazioni</h4>
+                        <div id="lista-chat-attive" class="chat-list-container">
+                            <p style="color: gray;">Caricamento...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav style="margin-top: 20px;">
             <a href="annunci.html" class="btn-grande">Sfoglia Annunci</a>
             <a href="vendita.html" class="btn-grande">Vendi Auto</a>
         </nav>
     </header>
-<main>
-    <div id="auth-section">
-        <h2>Accedi o Registrati</h2>
-        <input type="email" id="email-login" placeholder="Email" class="search-bar" style="display:block; margin: 10px auto;">
-        <input type="password" id="pass-login" placeholder="Password" class="search-bar" style="display:block; margin: 10px auto;">
-        
-        <button id="btn-login" class="btn-normale">Accedi</button>
-        <button id="btn-registrati" class="btn-normale" style="background-color: gray;">Registrati</button>
-    </div>
-
-    <div id="user-logged" style="display:none;">
-        <p>Benvenuto, <span id="user-email-display" style="color: cyan; font-weight: bold;"></span></p>
-        <button id="btn-logout" class="btn-normale" style="background-color: #444; color: white; height: 40px; width: 120px;">Logout</button>
-        
-        <hr border="1" color="cyan" style="margin: 20px 0;">
-        
-        <h3>Le mie Conversazioni</h3>
-        <div id="lista-chat-attive" class="chat-list-container">
-            <p style="color: gray;">Caricamento conversazioni...</p>
-        </div>
-    </div>
-</main>
+    
+    <main>
+        </main>
 
     <script type="module" src="auth.js"></script>
+    <script>
+        // Logica per aprire/chiudere il menù a tendina
+        document.getElementById('btn-menu-utente').addEventListener('click', () => {
+            document.getElementById('dropdown-menu').classList.toggle('show');
+        });
+    </script>
 </body>
-
 </html>

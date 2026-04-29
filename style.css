@@ -132,7 +132,7 @@ header {
 
 /* --- MIGLIORAMENTI GLOBALI --- */
 body {
-    background-color: #0d0d0d; /* Un nero leggermente più morbido */
+    background-color: #0d0d0d;
     color: #f0f0f0;
 }
 
@@ -185,7 +185,7 @@ input, textarea {
 #main-img {
     width: 100%;
     height: 400px;
-    object-fit: contain; /* Evita che l'immagine si deformi */
+    object-fit: contain;
 }
 
 .carousel-btn {
@@ -239,57 +239,111 @@ input, textarea {
     box-shadow: 0 2px 5px rgba(0, 255, 255, 0.2);
 }
 
-/* Lista chat nella Home */
-.chat-list-container {
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.chat-item {
-    background: #222;
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 4px solid cyan;
+/* --- STILI MENU A TENDINA (INDEX) --- */
+.header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    position: relative;
+}
+
+.menu-utente-container {
+    position: relative;
+}
+
+.btn-utente {
+    background-color: transparent;
+    border: 2px solid cyan;
+    color: cyan;
+    padding: 10px 20px;
+    border-radius: 20px;
     cursor: pointer;
-    transition: 0.2s;
-}
-
-.chat-item:hover {
-    background: #333;
-}
-
-.badge-notifica {
-    background: red;
-    color: white;
-    font-size: 0.7em;
-    padding: 4px 8px;
-    border-radius: 50%;
     font-weight: bold;
+    font-size: 16px;
+    transition: 0.3s;
 }
 
-/* Header miniatura in chat.html */
-.mini-annuncio-header {
+.btn-utente:hover {
+    background-color: cyan;
+    color: black;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 320px;
+    background-color: #111;
+    border: 2px solid cyan;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.9);
+    padding: 20px;
+    z-index: 1000;
+    text-align: left;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+/* --- STILI CHAT DARK THEME --- */
+.chat-main-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#chat-box {
+    height: 55vh;
+    overflow-y: auto;
+    padding: 15px;
     display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px;
-    background: #1a1a1a;
+    flex-direction: column;
+    border: 1px solid cyan;
     border-radius: 8px;
     margin-bottom: 15px;
-    border: 1px solid #333;
+    background-color: #0a0a0a;
 }
 
-.btn-back {
-    background: none;
-    border: 1px solid gray;
-    color: gray;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 10px;
+.msg {
+    max-width: 75%;
+    padding: 10px 15px;
+    margin: 5px 0;
+    border-radius: 15px;
+    word-wrap: break-word;
+    display: inline-block;
+}
+
+.msg-mio {
+    background-color: #004d4d;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+    border: 1px solid cyan;
+}
+
+.msg-altro {
+    background-color: #222;
+    color: white;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+    border: 1px solid #555;
+}
+
+#form-messaggio {
+    display: flex;
+    gap: 10px;
+}
+
+/* Conferme di lettura */
+.stato-lettura {
+    font-size: 0.75em;
+    color: cyan;
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+    opacity: 0.8;
 }

@@ -40,7 +40,7 @@
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     let utenteAttivo = null;
-    let arrayImmagini = []; // Assicurati di avere la tua logica che riempie questo array
+    let arrayImmagini = [];
 
     // 1. Controlliamo se l'utente è loggato appena entra nella pagina
     onAuthStateChanged(auth, (user) => {
@@ -62,7 +62,6 @@
             return;
         }
 
-        // Recupero i dati dai tuoi input (controlla che gli ID siano giusti!)
         const datiAuto = {
             id_venditore: utenteAttivo.uid,
             email_venditore: utenteAttivo.email,
@@ -90,9 +89,6 @@
         }
     });
 
-    // --- Qui puoi rimettere la tua funzione per leggere le foto ---
-    // Esempio rapido per popolare arrayImmagini:
-    // Lettura foto e generazione anteprime
     document.getElementById('foto').addEventListener('change', function(e) {
         const previewArea = document.getElementById('preview-area');
         previewArea.innerHTML = ''; // Pulisce vecchie anteprime se l'utente cambia idea

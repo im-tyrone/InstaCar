@@ -4,55 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat - InstaCar</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
-        .chat-container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 20px; }
-        
-        #chat-box {
-            height: 60vh; /* Prende il 60% dell'altezza dello schermo */
-            overflow-y: auto; /* Aggiunge la barra di scorrimento se ci sono tanti messaggi */
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            background-color: #e5ddd5; /* Colore tipico da chat */
-        }
-
-        /* Stile base dei messaggi */
-        .msg { max-width: 70%; padding: 10px 15px; margin: 5px 0; border-radius: 15px; word-wrap: break-word; }
-        
-        /* I MIEI messaggi */
-        .msg-mio { background-color: #dcf8c6; color: black; align-self: flex-end; border-bottom-right-radius: 2px; }
-        
-        /* Messaggi dell'ALTRO utente */
-        .msg-altro { background-color: #ffffff; color: black; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-
-        /* Barra di inserimento */
-        #form-messaggio { display: flex; gap: 10px; }
-        #testo-msg { flex: 1; padding: 12px; border-radius: 20px; border: 1px solid #ccc; outline: none; }
-        .btn-invia { padding: 10px 20px; background: #0084ff; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;}
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <h1>InstaCar Chat</h1>
+    </header>
 
-    <div class="chat-container">
+    <main class="chat-main-container">
         <div id="header-annuncio-chat" class="mini-annuncio-header">
-            </div>
-        
-        <button onclick="window.history.back()" class="btn-back">Indietro</button>
+            <button onclick="window.history.back()" class="btn-normale" style="width: auto; height: 40px; padding: 0 15px;">← Indietro</button>
+            <div id="dettagli-mini-annuncio" style="display: flex; align-items: center; gap: 15px; margin-left: 15px;">
+                </div>
+        </div>
 
-        <button onclick="window.history.back()" style="margin-bottom: 15px; cursor: pointer;">← Torna all'annuncio</button>
-        <h2>Chat Privata</h2>
-        
         <div id="chat-box"></div>
 
         <form id="form-messaggio">
-            <input type="text" id="testo-msg" placeholder="Scrivi un messaggio..." required autocomplete="off">
-            <button type="submit" class="btn-invia">Invia</button>
+            <input type="text" id="testo-msg" placeholder="Scrivi un messaggio..." required autocomplete="off" class="search-bar" style="width: 100%; margin: 0;">
+            <button type="submit" class="btn-pubblica" style="padding: 10px 20px;">Invia</button>
         </form>
-    </div>
+    </main>
 
     <script type="module" src="chat.js"></script>
 </body>

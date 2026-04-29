@@ -1,8 +1,7 @@
 import { auth, db } from './firebase-config.js';
-import { collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, addDoc, query, where, onSnapshot, serverTimestamp, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-// Estraiamo i dati dall'indirizzo URL
 const params = new URLSearchParams(window.location.search);
 const idAnnuncio = params.get('annuncio');
 const idVenditore = params.get('venditore');
@@ -14,84 +13,111 @@ let utenteAttivo = null;
 onAuthStateChanged(auth, (user) => {
     if (user) {
         utenteAttivo = user;
-        ascoltaMessaggi(); // Se sei loggato, avvia la ricezione in tempo reale
+        caricaInfoAnnuncio();
+        ascoltaMessaggi(); 
     } else {
         alert("Devi accedere per visualizzare la chat.");
         window.location.href = "index.html";
     }
 });
 
-// 2. Funzione per INVIARE un nuovo messaggio
+// 2. Carica l'anteprima dell'annuncio
+async function caricaInfoAnnuncio() {
+    const annuncioRef = doc(db, "annunci", idAnnuncio);
+    const annuncioSnap = await getDoc(annuncioRef);
+    
+    if (annuncioSnap.exists()) {
+        const auto = annuncioSnap.data();
+        const container = document.getElementById('dettagli-mini-annuncio');
+        container.innerHTML = `
+            <img src="${auto.immagini ? auto.immagini[0] : ''}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid cyan;">
+            <div>
+                <div style="font-weight: bold; color: cyan; font-size: 1.1em;">${auto.marca} ${auto.modello}</div>
+                <div style="font-size: 0.9em; color: #aaa;">${auto.prezzo} €</div>
+            </div>
+        `;
+    }
+}
+
+// 3. Invio Messaggio
 document.getElementById('form-messaggio').addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = document.getElementById('testo-msg');
     const testo = input.value.trim();
     if (!testo) return;
 
-    input.value = ''; // Pulisce la barra subito dopo aver premuto invio
+    input.value = '';
+
+    // Determino chi è il destinatario
+    const idDestinatario = (utenteAttivo.uid === idVenditore) ? idCompratore : idVenditore;
 
     try {
-        // Salviamo il messaggio in una nuova collezione chiamata "messaggi"
         await addDoc(collection(db, "messaggi"), {
             id_annuncio: idAnnuncio,
             id_venditore: idVenditore,
             id_compratore: idCompratore,
-            mittente: utenteAttivo.uid, // Chi ha scritto materialmente questo messaggio
+            mittente: utenteAttivo.uid,
+            destinatario: idDestinatario,
             testo: testo,
-            timestamp: serverTimestamp() // Orario esatto del server
+            letto: false, // Inizializzato come non letto
+            timestamp: serverTimestamp()
         });
     } catch (error) {
         console.error("Errore invio:", error);
     }
 });
 
-// 3. Funzione per RICEVERE i messaggi (La magia del Real-Time)
+// 4. Ricezione messaggi e gestione conferme di lettura
 function ascoltaMessaggi() {
     const chatBox = document.getElementById('chat-box');
-    
-    // Filtriamo il database: prendiamo solo i messaggi di QUESTA auto
-    const q = query(
-        collection(db, "messaggi"), 
-        where("id_annuncio", "==", idAnnuncio)
-    );
+    const q = query(collection(db, "messaggi"), where("id_annuncio", "==", idAnnuncio));
 
-    // onSnapshot ascolta i cambiamenti. Se nel DB si aggiunge un messaggio, questo codice si riavvia da solo.
     onSnapshot(q, (snapshot) => {
         let messaggi = [];
         
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            // Controllo extra: è davvero la chat tra QUESTO compratore e QUESTO venditore?
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const docId = docSnap.id;
+
             if (data.id_venditore === idVenditore && data.id_compratore === idCompratore) {
-                messaggi.push(data);
+                messaggi.push({ id: docId, ...data });
+
+                // SEGNALA COME LETTO: Se io sono il destinatario e il messaggio non è letto, lo aggiorno sul DB
+                if (data.destinatario === utenteAttivo.uid && data.letto === false) {
+                    updateDoc(doc(db, "messaggi", docId), { letto: true });
+                }
             }
         });
 
-        // Riordiniamo i messaggi dal più vecchio al più nuovo usando il timestamp
         messaggi.sort((a, b) => {
             const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
             const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
             return timeA - timeB;
         });
 
-        // Svuotiamo il box e ridisegniamo tutti i messaggi
         chatBox.innerHTML = '';
         messaggi.forEach((msg) => {
             const div = document.createElement('div');
             div.classList.add('msg');
             
-            // Applichiamo i colori giusti: è mio o dell'altro utente?
             if (msg.mittente === utenteAttivo.uid) {
                 div.classList.add('msg-mio');
+                div.innerText = msg.testo;
+                
+                // Crea l'elemento per la conferma di lettura (Visualizzato)
+                const statoLettura = document.createElement('span');
+                statoLettura.classList.add('stato-lettura');
+                statoLettura.innerText = msg.letto ? "✓✓ Visualizzato" : "✓ Inviato";
+                div.appendChild(statoLettura);
+
             } else {
                 div.classList.add('msg-altro');
+                div.innerText = msg.testo;
             }
             
-            div.innerText = msg.testo;
             chatBox.appendChild(div);
         });
 
-        // Scrolla automaticamente la vista in basso all'ultimo messaggio
         chatBox.scrollTop = chatBox.scrollHeight;
     });
 }

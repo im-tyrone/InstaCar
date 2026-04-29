@@ -58,9 +58,6 @@ function caricaListaChat(user) {
     const listaChat = document.getElementById('lista-chat-attive');
     if (!listaChat) return;
 
-    // Cerchiamo tutti i messaggi dove l'utente è mittente o destinatario
-    // Nota: in un'app reale useremmo una collezione "conversazioni" separata, 
-    // qui raggruppiamo i messaggi esistenti per semplicità.
     const q = query(collection(db, "messaggi"));
 
     onSnapshot(q, async (snapshot) => {
@@ -122,7 +119,6 @@ function caricaListaChat(user) {
     });
 }
 
-// Modifica la parte esistente di onAuthStateChanged in auth.js per chiamare la funzione
 onAuthStateChanged(auth, (user) => {
     const authSection = document.getElementById('auth-section');
     const userSection = document.getElementById('user-logged');
@@ -131,7 +127,7 @@ onAuthStateChanged(auth, (user) => {
         authSection.style.display = 'none';
         userSection.style.display = 'block';
         document.getElementById('user-email-display').innerText = user.email;
-        caricaListaChat(user); // <--- AGGIUNGI QUESTA RIGA
+        caricaListaChat(user);
     } else {
         authSection.style.display = 'block';
         userSection.style.display = 'none';
