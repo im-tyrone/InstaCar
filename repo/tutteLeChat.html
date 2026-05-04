@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Mie Chat - InstaCar</title>
+    <!-- Assicurati che il percorso del CSS sia corretto -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>InstaCar</h1>
+        <h2>Le tue conversazioni</h2>
+    </header>
+
+    <main style="padding: 20px; max-width: 800px; margin: 0 auto;">
+        <!-- Titolo della sezione -->
+        <h3 style="color: cyan; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;">
+            Messaggi Recenti
+        </h3>
+
+        <!-- Questo è il contenitore vuoto che verrà riempito da tutteLeChat.js -->
+        <div id="lista-completa-chat">
+            <p style="color: gray; text-align: center; margin-top: 50px;">
+                Caricamento delle tue conversazioni...
+            </p>
+        </div>
+
+        <!-- Navigazione per tornare indietro -->
+        <nav style="margin-top: 40px; text-align: center;">
+            <a href="index.html" class="btn-normale">Torna alla Home</a>
+        </nav>
+    </main>
+
+    <!-- Importante: carica prima la configurazione e poi la logica delle chat -->
+    <script type="module" src="tutteLeChat.js"></script>
+</body>
+
+</html>

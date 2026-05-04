@@ -35,6 +35,15 @@ if (btnReg) {
 onAuthStateChanged(auth, (user) => {
     const authSection = document.getElementById('auth-section');
     const userSection = document.getElementById('user-logged');
+
+    if (user) {
+        authSection.style.display = 'none';
+        userSection.style.display = 'block';
+        document.getElementById('user-email-display').innerText = user.email;
+    } else {
+        authSection.style.display = 'block';
+        userSection.style.display = 'none';
+    }
 });
 
 // Logout
@@ -42,34 +51,85 @@ btnLogout.addEventListener('click', () => signOut(auth));
 
 
 import { db } from './firebase-config.js';
-// Modifica la parte esistente di onAuthStateChanged in auth.js per chiamare la funzione
-// Gestione Reindirizzamento e Visibilità
+import { collection, query, where, onSnapshot, getDoc, doc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+// Funzione per caricare la lista delle chat nella Home
+function caricaListaChat(user) {
+    const listaChat = document.getElementById('lista-chat-attive');
+    if (!listaChat) return;
+
+    const q = query(collection(db, "messaggi"));
+
+    onSnapshot(q, async(snapshot) => {
+                const conversazioniMap = {};
+
+                snapshot.forEach((msgDoc) => {
+                    const m = msgDoc.data();
+                    // Filtriamo: l'utente deve essere parte della chat
+                    if (m.id_venditore === user.uid || m.id_compratore === user.uid) {
+                        // Creiamo una chiave unica per la chat (annuncio + i due utenti)
+                        const chatKey = `${m.id_annuncio}_${m.id_venditore}_${m.id_compratore}`;
+
+                        if (!conversazioniMap[chatKey]) {
+                            conversazioniMap[chatKey] = {
+                                id_annuncio: m.id_annuncio,
+                                id_venditore: m.id_venditore,
+                                id_compratore: m.id_compratore,
+                                ultimoMessaggio: m.testo,
+                                nonLetti: 0
+                            };
+                        }
+                        // Sistema Notifiche: conta messaggi dove io sono il destinatario e "letto" è false
+                        if (m.destinatario === user.uid && m.letto === false) {
+                            conversazioniMap[chatKey].nonLetti++;
+                        }
+                    }
+                });
+
+                listaChat.innerHTML = "";
+                const keys = Object.keys(conversazioniMap);
+
+                if (keys.length === 0) {
+                    listaChat.innerHTML = "<p style='color:gray;'>Nessuna chat attiva.</p>";
+                    return;
+                }
+
+                for (let key of keys) {
+                    const chat = conversazioniMap[key];
+                    const annuncioSnap = await getDoc(doc(db, "annunci", chat.id_annuncio));
+                    const datiAnnuncio = annuncioSnap.exists() ? annuncioSnap.data() : { marca: "Annuncio", modello: "Eliminato" };
+
+                    const chatItem = document.createElement('div');
+                    chatItem.className = 'chat-item';
+                    chatItem.innerHTML = `
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <img src="${datiAnnuncio.immagini ? datiAnnuncio.immagini[0] : ''}" style="width:50px; height:50px; border-radius:5px; object-fit:cover;">
+                    <div>
+                        <div style="font-weight:bold; color:cyan;">${datiAnnuncio.marca} ${datiAnnuncio.modello}</div>
+                        <div style="font-size:0.8em; color:#bbb;">${chat.ultimoMessaggio.substring(0, 30)}...</div>
+                    </div>
+                </div>
+                ${chat.nonLetti > 0 ? `<span class="badge-notifica">${chat.nonLetti}</span>` : ''}
+            `;
+            chatItem.onclick = () => {
+                window.location.href = `chat.html?annuncio=${chat.id_annuncio}&venditore=${chat.id_venditore}&compratore=${chat.id_compratore}`;
+            };
+            listaChat.appendChild(chatItem);
+        }
+    });
+}
+
 onAuthStateChanged(auth, (user) => {
     const authSection = document.getElementById('auth-section');
     const userSection = document.getElementById('user-logged');
 
     if (user) {
-        // Se l'utente è loggato...
-
-        // 1. Se nella pagina ci sono i contenitori, gestisci la visibilità
-        if (authSection) authSection.style.display = 'none';
-        if (userSection) {
-            userSection.style.display = 'block';
-            const emailDisplay = document.getElementById('user-email-display');
-            if (emailDisplay) emailDisplay.innerText = user.email;
-        }
-
-        // 2. Carica le chat se la funzione esiste
+        authSection.style.display = 'none';
+        userSection.style.display = 'block';
+        document.getElementById('user-email-display').innerText = user.email;
         caricaListaChat(user);
-
-        // 3. REINDIRIZZAMENTO: Se l'utente è sulla pagina di login, mandalo alla index
-        // Controlliamo se l'URL attuale contiene "login" o il nome della tua pagina di login
-        if (window.location.pathname.includes("login.html") || window.location.pathname.endsWith("/")) {
-            window.location.href = 'index.html';
-        }
     } else {
-        // Se l'utente NON è loggato
-        if (authSection) authSection.style.display = 'block';
-        if (userSection) userSection.style.display = 'none';
+        authSection.style.display = 'block';
+        userSection.style.display = 'none';
     }
 });

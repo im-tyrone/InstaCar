@@ -1,30 +1,29 @@
-import { db } from './firebase-config.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+// Riferimenti ai nuovi elementi HTML
+const inputMarca = document.getElementById('filtro-marca');
+const inputModello = document.getElementById('filtro-modello');
+const inputPrezzo = document.getElementById('filtro-prezzo');
 
-const listaAuto = document.getElementById('lista-auto');
+// Funzione principale per filtrare e mostrare gli annunci
+function applicaFiltri(tuttiGliAnnunci) {
+    const marca = inputMarca.value.toLowerCase();
+    const modello = inputModello.value.toLowerCase();
+    const prezzoMax = parseFloat(inputPrezzo.value) || Infinity;
 
-async function caricaAnnunci() {
-    if (!listaAuto) return;
-    listaAuto.innerHTML = "<p>Caricamento...</p>";
+    const filtrati = tuttiGliAnnunci.filter(auto => {
+        const matchMarca = auto.marca.toLowerCase().includes(marca);
+        const matchModello = auto.modello.toLowerCase().includes(modello);
+        const matchPrezzo = parseFloat(auto.prezzo) <= prezzoMax;
 
-    const querySnapshot = await getDocs(collection(db, "annunci"));
-    listaAuto.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-        const auto = doc.data();
-        const id = doc.id; // Usiamo l'ID di Firebase
-
-        const card = document.createElement('div');
-        card.classList.add('card-auto');
-        card.innerHTML = `
-            <img src="${auto.immagini[0]}" alt="${auto.marca}">
-            <h3>${auto.marca}</h3>
-            <p>${auto.modello}</p>
-            <p><strong>${auto.prezzo}</strong></p>
-        `;
-        card.onclick = () => window.location.href = `auto.html?id=${id}`;
-        listaAuto.appendChild(card);
+        return matchMarca && matchModello && matchPrezzo;
     });
+
+    renderizzaAnnunci(filtrati); // Questa è la tua funzione che disegna i div nel DOM
 }
 
-caricaAnnunci();
+// Aggiungi gli event listener a tutti e tre gli input
+[inputMarca, inputModello, inputPrezzo].forEach(input => {
+    input.addEventListener('input', () => {
+        // Qui chiamerai la tua logica di filtraggio esistente passandogli i nuovi valori
+        applicaFiltri(listaOriginaleAnnunci);
+    });
+});

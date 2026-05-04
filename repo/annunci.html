@@ -12,8 +12,14 @@
 <body>
     <header>
         <h1>InstaCar</h1><br>
-        <h2>trova l'auto perfetta per te!</h2>
-        <input type="text" id="cerca-auto" placeholder="Cerca per marca o modello..." class="search-bar">
+        <h2>Trova l'auto perfetta per te!</h2>
+
+        <!-- Nuova sezione filtri -->
+        <div class="search-container" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+            <input type="text" id="filtro-marca" placeholder="Marca (es. Fiat)" class="search-bar" style="width: 200px; margin: 0;">
+            <input type="text" id="filtro-modello" placeholder="Modello (es. Panda)" class="search-bar" style="width: 200px; margin: 0;">
+            <input type="number" id="filtro-prezzo" placeholder="Prezzo Max (€)" class="search-bar" style="width: 150px; margin: 0;">
+        </div>
     </header>
     <main>
         <div id="lista-auto"></div>
